@@ -1,0 +1,31 @@
+pluginManagement {
+    def properties = new Properties()
+    def localPropertiesFile = file("local.properties")
+
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+    } else {
+        println "Warning: local.properties file not found!"
+    }
+
+    def flutterSdkPath = properties.getProperty("flutter.sdk")
+
+    if (flutterSdkPath == null || flutterSdkPath.isEmpty()) {
+        throw new GradleException("Error: 'flutter.sdk' not set in local.properties. Please set it correctly.")
+    }
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id "com.android.application" version "8.1.0" apply false
+    id "org.jetbrains.kotlin.android" version "1.8.22" apply false
+}
+
+include ":app"

@@ -27,14 +27,13 @@ class MagicBallScreen extends StatefulWidget {
 class _MagicBallScreenState extends State<MagicBallScreen> {
   int imageIndex = 1;
   bool isShaking = false;
+  double opacity = 1.0;
 
   @override
   void initState() {
     super.initState();
 
-
     imageIndex = Random().nextInt(23) + 1;
-
 
     accelerometerEvents.listen((AccelerometerEvent event) {
       double shakeThreshold = 15.0;
@@ -47,8 +46,14 @@ class _MagicBallScreenState extends State<MagicBallScreen> {
 
   void getRandomImage() {
     setState(() {
-      imageIndex = Random().nextInt(23) + 1;
-      isShaking = false;
+      opacity = 0.0;
+    });
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {
+        imageIndex = Random().nextInt(23) + 1;
+        opacity = 1.0;
+      });
     });
   }
 
@@ -87,17 +92,22 @@ class _MagicBallScreenState extends State<MagicBallScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'images/$imageIndex.png',
-                width: 250,
-                height: 250,
+              AnimatedOpacity(
+                duration: Duration(milliseconds: 500),
+                opacity: opacity,
+                child: Image.asset(
+                  'images/$imageIndex.png',
+                  width: 300,
+                  height: 300,
+                  fit: BoxFit.contain,
+                ),
               ),
               const SizedBox(height: 20),
               const Text(
                 "Telefonu salla veya ekrana dokun!",
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
